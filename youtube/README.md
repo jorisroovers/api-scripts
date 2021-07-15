@@ -2,6 +2,9 @@
 
 Scripts that interact with the Youtube API.
 
+## Top Videos
+Fetch top videos for all your personal subscriptions, print as csv.
+
 ```sh
 poetry shell
 poetry install
@@ -11,5 +14,3 @@ poetry install
 export CLIENT_SECRET_FILE="client_secret.json"
 python top-videos.py
 ```
-
-
