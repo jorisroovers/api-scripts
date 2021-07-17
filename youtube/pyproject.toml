@@ -3,6 +3,7 @@ name = "youtube"
 version = "0.1.0"
 description = ""
 license = "MIT"
+authors = ["Joris Roovers"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

@@ -21,6 +21,8 @@ def main():
     api_service_name = "youtube"
     api_version = "v3"
     client_secrets_file = os.environ["CLIENT_SECRET_FILE"]
+    skip_channels = [c.strip() for c in os.environ["SKIP_CHANNELS"].split(",")]
+
 
     # Get credentials and create an API client
     flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(client_secrets_file, scopes)
@@ -40,17 +42,22 @@ def main():
         response = request.execute()
         store_channels(response, subscriptions)
 
-
     # pretty print channels dict
     print("SUBSCRIPTIONS")
     print("Subscription Count:", len(subscriptions))
     for channel_id, channel in subscriptions.items():
+        if (channel['title'] in skip_channels):
+            print("SKIPPING {0}".format(channel['title']))
+        else:
+            print("FETCHING {0}".format(channel['title']))
+            continue
         # print(channel['title'], channel_id)
+        # search is an expensive operation, it takes 100 credits! (and only 10k credits per day)
         request = youtube.search().list(channelId=channel_id, type="video", part="snippet", order="viewCount")
         response = request.execute()
         for video in response['items']:
             # print("\t", video['snippet']['title'], "https://www.youtube.com/watch?v={0}".format(video['id']['videoId']))
-            print(channel['title'] + "," + video['snippet']['title'] + "," + 
+            print(channel['title'] + "\\" + video['snippet']['title'] + "\\" + 
                   "https://www.youtube.com/watch?v={0}".format(video['id']['videoId']))
 
 
