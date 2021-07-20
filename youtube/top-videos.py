@@ -45,21 +45,25 @@ def main():
     # pretty print channels dict
     print("SUBSCRIPTIONS")
     print("Subscription Count:", len(subscriptions))
+    skip_count = 0
     for channel_id, channel in subscriptions.items():
         if (channel['title'] in skip_channels):
             print("SKIPPING {0}".format(channel['title']))
+            skip_count += 1
         else:
             print("FETCHING {0}".format(channel['title']))
-            continue
-        # print(channel['title'], channel_id)
-        # search is an expensive operation, it takes 100 credits! (and only 10k credits per day)
-        request = youtube.search().list(channelId=channel_id, type="video", part="snippet", order="viewCount")
-        response = request.execute()
-        for video in response['items']:
-            # print("\t", video['snippet']['title'], "https://www.youtube.com/watch?v={0}".format(video['id']['videoId']))
-            print(channel['title'] + "\\" + video['snippet']['title'] + "\\" + 
-                  "https://www.youtube.com/watch?v={0}".format(video['id']['videoId']))
+            # print(channel['title'], channel_id)
+            # search is an expensive operation, it takes 100 credits! (and only 10k credits per day)
+            request = youtube.search().list(channelId=channel_id, type="video", part="snippet", order="viewCount")
+            response = request.execute()
+            for video in response['items']:
+                # print("\t", video['snippet']['title'], "https://www.youtube.com/watch?v={0}".format(video['id']['videoId']))
+                print(channel['title'] + "\\" + video['snippet']['title'] + "\\" + 
+                      "https://www.youtube.com/watch?v={0}".format(video['id']['videoId']))
 
+    print("SKIPPED {0}".format(skip_count))
+    print("FETCHED {0}".format(len(subscriptions) - skip_count))
+    print("ALL DONE")
 
 if __name__ == "__main__":
     main()
